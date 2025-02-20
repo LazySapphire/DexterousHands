@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mujoco>
+    <compiler angle="radian" coordinate="local" meshdir="../stls" texturedir="../textures"></compiler>
+    <option timestep="0.002" iterations="20" apirate="200">
+        <flag warmstart="enable"></flag>
+    </option>
+<!-- <option timestep="0.001" iterations="50" apirate="50"/> -->
+    <size njmax="500" nconmax="100" nuser_jnt="1" nuser_site="1" nuser_tendon="1" nuser_sensor="1" nuser_actuator="16" nstack="600000"></size>
+    <visual>
+        <map fogstart="3" fogend="5" force="0.1"></map>
+        <quality shadowsize="4096"></quality>
+    </visual>
+
+    <default>
+        <default class="H1:MPL">
+            <joint limited="true" damping="0.1" armature="0.001" margin="0.01" frictionloss="0.001"/>
+            <geom friction="1 0.005 0.001" condim="3" margin="0.0005" contype="1" conaffinity="1"/>
+            <position kp="1"/>
+            <site size="0.005" rgba="0.4 0.9 0.4 1"/>
+            <general ctrllimited="true" forcelimited="true"></general>
+        </default>
+
+        <default class="H1:D_Touch">
+            <site type="box" size="0.009 0.004 0.013" pos="0 -0.004 0.018" rgba="0.8 0.8 0.8 0.15" group="4"></site>
+        </default>
+
+        <default class="H1:DC_Hand">
+            <geom material="H1:MatColl" contype="1" conaffinity="0" group="4"></geom>
+        </default>
+    </default>
+
+    <asset>
+        <texture type="skybox" builtin="gradient" rgb1="0.44 0.85 0.56" rgb2="0.46 0.87 0.58" width="32" height="32"></texture>
+
+        <texture name="H1:texplane" type="2d" builtin="checker" rgb1="0.2 0.3 0.4" rgb2="0.1 0.15 0.2" width="512" height="512"></texture>
+        <texture name="H1:texgeom" type="cube" builtin="flat" mark="cross" width="127" height="127" rgb1="0.3 0.6 0.5" rgb2="0.3 0.6 0.5" markrgb="0 0 0" random="0.01"></texture>
+
+        <material name="H1:MatGnd" reflectance="0.5" texture="H1:texplane" texrepeat="1 1" texuniform="true"></material>
+        <material name="H1:MatColl" specular="1" shininess="0.3" reflectance="0.5" rgba="0.4 0.5 0.6 1"></material>
+        <material name="H1:MatViz" specular="0.75" shininess="0.1" reflectance="0.5" rgba="0.93 0.93 0.93 1"></material>
+        <material name="H1:object" texture="H1:texgeom" texuniform="false"></material>
+        <material name="floor_mat" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.2 0"></material>
+
+        <mesh name="H1:palm"           file="palm.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:palm_fix"           file="palm_fix.stl"         scale="0.001 0.001 0.001"/>
+
+        <mesh name="H1:tmb_ROOT"           file="tmb_ROOT.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:tmb_AXIS"           file="tmb_AXIS.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:tmb_MF"           file="tmb_MF.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:tmb_DF"           file="tmb_DF.stl"         scale="0.001 0.001 0.001"/>
+
+        <mesh name="H1:idx_ABD"           file="idx_ABD.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:idx_DF"           file="idx_DF.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:idx_MF"           file="idx_MF.stl"         scale="0.001 0.001 0.001"/>
+
+        <mesh name="H1:mid_ABD"           file="mid_ABD.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:mid_MF"           file="mid_MF.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:mid_DF"           file="mid_DF.stl"         scale="0.001 0.001 0.001"/>
+
+        <mesh name="H1:rng_ABD"           file="rng_ABD.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:rng_DF"           file="rng_DF.stl"         scale="0.001 0.001 0.001"/>
+        <mesh name="H1:rng_MF"           file="rng_MF.stl"         scale="0.001 0.001 0.001"/>
+
+    </asset>
+
+    <worldbody>
+        <camera name="fixed" pos="-0.2 -1.2 1.2" zaxis="0 -1 1" fovy="45" ipd="0.068"/>
+
+        <light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false" pos="0 1 4" dir="0 0 -1" name="light0"></light>
+        
+        <body childclass="H1:MPL" name="H1:forearm" pos="0 0 0.2">
+            <inertial mass="0.1" pos="0 0 0" diaginertia="0.001 0.001 0.001"></inertial>
+            <body name="H1:palm" >
+                <geom  name="H1:C_palm" type="mesh" mesh="H1:palm" />
+
+                <body name="H1:palm_fix" >
+                    <geom  name="H1:C_palm_fix" type="mesh" mesh="H1:palm_fix" />
+                </body>
+
+                <!-- THUMB FINGER -->
+                <body name="H1:tmb_ROOT" pos="0.033278 0.011 0.009418">
+                    <geom  name="H1:C_tmb_ROOT" type="mesh" mesh="H1:tmb_ROOT" pos="0 0 0"/>
+                    <joint name="H1:jot_tmb_ROOT" type="hinge" pos="0 0 0" axis="-0.0875 0 1" range="-2.02 0.202"/>
+
+                    <body name="H1:tmb_AXIS"  pos="0.011495 0 -0.010416">
+                        <geom  name="H1:C_tmb_AXIS" type="mesh" mesh="H1:tmb_AXIS" pos="0 0 0"/>
+                        <joint name="H1:jot_tmb_AXIS" type="hinge" pos="-0.000705 0 0.001824" axis="-1 0 -0.0875" range="-0.202 1.02"/>
+                        
+                        <body name="H1:tmb_MF" pos="0.031554 -0.012560 0.006266">
+                            <geom  name="H1:C_tmb_MF" type="mesh" mesh="H1:tmb_MF" pos="0 0 0"/>
+                            <joint name="H1:jot_tmb_MF" type="hinge" pos="-0.023891 0.007560 -0.000050" axis="0 1 0" range="-1.57 0.42"/>
+
+                            <body name="H1:tmb_DF" pos="0.051366 0.004099 0.006644">
+                                <geom  name="H1:C_tmb_DF" type="mesh" mesh="H1:tmb_DF" pos="0 0 0"/>
+                                <joint name="H1:jot_tmb_DF" type="hinge" pos="-0.024757 0.000742 -0.013612" axis="0 1 1" range="-1.33 0.152"/>
+
+                                <site name="H1:S_tmb_tip" pos="0 0 0.026" group="3"></site>
+                                <site class="H1:D_Touch" name="H1:Tch_tmb_tip"></site>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+
+                <!-- MIDDLE FINGER -->
+                <body name="H1:mid_ABD"  pos="0 .0105 .0866" >
+                    <geom  name="H1:C_mid_ABD" type="mesh" mesh="H1:mid_ABD" pos="0 0 0"/>
+                    <joint name="H1:jot_mid_ABD" type="hinge" pos="0 0 0" axis="0 1 0" range="-0.26 0.26"/>
+                    
+                    <body name="H1:mid_MF" pos="0 -.0105 0.02314">
+                        <geom  name="H1:C_mid_MF" type="mesh" mesh="H1:mid_MF" pos="0 0 0"/>
+                        <joint name="H1:jot_mid_MF" type="hinge" pos="0 .0105 -.02314" axis="1 0 0" range="0 1.57"/>
+
+                        <body name="H1:mid_DF" pos="0 0 0.052206">
+                            <geom  name="H1:C_mid_DF" type="mesh" mesh="H1:mid_DF" pos="0 0 0"/>
+                            <joint name="H1:jot_mid_DF" type="hinge" pos="0 .0105 -.025345" axis="1 0 0" range="-0.15 1.52"/>
+
+                            <site name="H1:S_mid_tip" pos="0 0 0.026" group="3"></site>
+                            <site class="H1:D_Touch" name="H1:Tch_mid_tip"></site>
+                        </body>
+                    </body>
+                </body>
+
+                <!-- INDEX FINGER -->
+                <body name="H1:idx_ABD"  pos="0.031527 .0105 0.08389 " quat="0.999 0 0.044 0">
+                    <geom name="H1:C_idx_ABD" type="mesh" mesh="H1:idx_ABD" pos="0 0 0"/>
+                    <joint name="H1:jot_idx_ABD" type="hinge" pos="0 0 0" axis="0 1 0" range="-0.26 0.26"/>
+                    
+                    <body name="H1:idx_MF" pos="0 -.0105 0.02314">
+                        <geom  name="H1:C_idx_MF" type="mesh" mesh="H1:idx_MF" pos="0 0 0"/>
+                        <joint name="H1:jot_idx_MF" type="hinge" pos="0 .0105 -.02314" axis="1 0 0" range="0 1.57"/>
+
+                        <body name="H1:idx_DF" pos="0 0 0.052206">
+                            <geom  name="H1:C_idx_DF" type="mesh" mesh="H1:idx_DF" pos="0 0 0"/>
+                            <joint name="H1:jot_idx_DF" type="hinge" pos="0 .0105 -.025345" axis="1 0 0" range="-0.15 1.52"/>
+
+                            <site name="H1:S_idx_tip" pos="0 0 0.026" group="3"></site>
+                            <site class="H1:D_Touch" name="H1:Tch_idx_tip"></site>
+                        </body>
+                    </body>
+                </body>
+
+                <!-- RING FINGER -->
+                <body name="H1:rng_ABD"  pos="-0.031527 .0105 0.08389 " quat="0.999 0 -0.044 0">
+                    <geom  name="H1:C_rng_ABD" type="mesh" mesh="H1:rng_ABD" pos="0 0 0"/>
+                    <joint name="H1:jot_rng_ABD" type="hinge" pos="0 0 0" axis="0 1 0" range="-0.26 0.26"/>
+                    
+                    <body name="H1:rng_MF" pos="0 -.0105 0.02314">
+                        <geom  name="H1:C_rng_MF" type="mesh" mesh="H1:rng_MF" pos="0 0 0"/>
+                        <joint name="H1:jot_rng_MF" type="hinge" pos="0 .0105 -.02314" axis="1 0 0" range="0 1.57"/>
+
+                        <body name="H1:rng_DF" pos="0 0 0.052206">
+                            <geom  name="H1:C_rng_DF" type="mesh" mesh="H1:rng_DF" pos="0 0 0"/>
+                            <joint name="H1:jot_rng_DF" type="hinge" pos="0 .0105 -.025345" axis="1 0 0" range="-0.15 1.52"/>
+
+                            <site name="H1:S_rng_tip" pos="0 0 0.026" group="3"></site>
+                            <site class="H1:D_Touch" name="H1:Tch_rng_tip"></site>
+                        </body>
+                    </body>
+                </body>
+
+            </body>
+        </body>
+    </worldbody>
+
+    <contact>
+        <!--碰撞检查-->
+        <pair geom1="H1:C_tmb_DF" geom2="H1:C_palm" condim="1"></pair>
+        <pair geom1="H1:C_tmb_MF" geom2="H1:C_palm" condim="1"></pair>
+
+        <pair geom1="H1:C_idx_DF" geom2="H1:C_tmb_DF" condim="1"></pair>
+        <pair geom1="H1:C_idx_MF" geom2="H1:C_tmb_DF" condim="1"></pair>
+
+        <pair geom1="H1:C_idx_DF" geom2="H1:C_mid_DF" condim="1"></pair>
+        <pair geom1="H1:C_idx_DF" geom2="H1:C_mid_MF" condim="1"></pair>
+        <pair geom1="H1:C_idx_MF" geom2="H1:C_mid_DF" condim="1"></pair>
+        <pair geom1="H1:C_idx_MF" geom2="H1:C_mid_MF" condim="1"></pair>
+
+        <pair geom1="H1:C_rng_DF" geom2="H1:C_mid_DF" condim="1"></pair>
+        <pair geom1="H1:C_rng_DF" geom2="H1:C_mid_MF" condim="1"></pair>
+        <pair geom1="H1:C_rng_MF" geom2="H1:C_mid_DF" condim="1"></pair>
+        <pair geom1="H1:C_rng_MF" geom2="H1:C_mid_MF" condim="1"></pair>
+
+        <!-- <pair geom1="H1:" geom2="H1:" condim="1"></pair> -->
+    </contact>
+
+    <sensor>
+        <jointpos name="H1:Sjp_mid_ABD" joint="H1:jot_mid_ABD"></jointpos>
+        <jointpos name="H1:Sjp_mid_MF" joint="H1:jot_mid_MF"></jointpos>
+        <jointpos name="H1:Sjp_mid_DF" joint="H1:jot_mid_DF"></jointpos>
+
+        <jointpos name="H1:Sjp_idx_ABD" joint="H1:jot_idx_ABD"></jointpos>
+        <jointpos name="H1:Sjp_idx_MF" joint="H1:jot_idx_MF"></jointpos>
+        <jointpos name="H1:Sjp_idx_DF" joint="H1:jot_idx_DF"></jointpos>
+
+        <jointpos name="H1:Sjp_rng_ABD" joint="H1:jot_rng_ABD"></jointpos>
+        <jointpos name="H1:Sjp_rng_MF" joint="H1:jot_rng_MF"></jointpos>
+        <jointpos name="H1:Sjp_rng_DF" joint="H1:jot_rng_DF"></jointpos>
+
+        <jointpos name="H1:Sjp_tmb_ROOT" joint="H1:jot_tmb_ROOT"></jointpos>
+        <jointpos name="H1:Sjp_tmb_AXIS" joint="H1:jot_tmb_AXIS"></jointpos>
+        <jointpos name="H1:Sjp_tmb_MF" joint="H1:jot_tmb_MF"></jointpos>
+        <jointpos name="H1:Sjp_tmb_DF" joint="H1:jot_tmb_DF"></jointpos>
+
+        <touch name="H1:ST_Tch_mid_tip" site="H1:Tch_mid_tip"></touch>
+        <touch name="H1:ST_Tch_idx_tip" site="H1:Tch_idx_tip"></touch>
+        <touch name="H1:ST_Tch_rng_tip" site="H1:Tch_rng_tip"></touch>
+        <touch name="H1:ST_Tch_tmb_tip" site="H1:Tch_tmb_tip"></touch>
+    </sensor>
+
+    <actuator>
+        <position name="H1:A_mid_ABD"  class="H1:MPL" joint="H1:jot_mid_ABD"  ctrlrange="-0.26 0.26"   forcerange="-1 1" />
+        <position name="H1:A_mid_MF"  class="H1:MPL" joint="H1:jot_mid_MF"  ctrlrange="0 1.57"   forcerange="-1 1" />
+        <position name="H1:A_mid_DF"  class="H1:MPL" joint="H1:jot_mid_DF"  ctrlrange="-0.15 1.52"   forcerange="-1 1" />
+
+        <position name="H1:A_idx_ABD"  class="H1:MPL" joint="H1:jot_idx_ABD"  ctrlrange="-0.26 0.26"   forcerange="-1 1" />
+        <position name="H1:A_idx_MF"  class="H1:MPL" joint="H1:jot_idx_MF"  ctrlrange="0 1.57"   forcerange="-1 1" />
+        <position name="H1:A_idx_DF"  class="H1:MPL" joint="H1:jot_idx_DF"  ctrlrange="-0.15 1.52"   forcerange="-1 1" />
+
+        <position name="H1:A_rng_ABD"  class="H1:MPL" joint="H1:jot_rng_ABD"  ctrlrange="-0.26 0.26"   forcerange="-1 1" />
+        <position name="H1:A_rng_MF"  class="H1:MPL" joint="H1:jot_rng_MF"  ctrlrange="0 1.57"   forcerange="-1 1" />
+        <position name="H1:A_rng_DF"  class="H1:MPL" joint="H1:jot_rng_DF"  ctrlrange="-0.15 1.52"   forcerange="-1 1" />
+
+        <position name="H1:A_tmb_ROOT"  class="H1:MPL" joint="H1:jot_tmb_ROOT"  ctrlrange="-2.02 0.202"   forcerange="-1 1" />
+        <position name="H1:A_tmb_AXIS"  class="H1:MPL" joint="H1:jot_tmb_AXIS"  ctrlrange="-0.202 1.02"   forcerange="-1 1" />
+        <position name="H1:A_tmb_MF"  class="H1:MPL" joint="H1:jot_tmb_MF"  ctrlrange="-1.57 0.42"   forcerange="-1 1" />
+        <position name="H1:A_tmb_DF"  class="H1:MPL" joint="H1:jot_tmb_DF"  ctrlrange="-1.33 0.152"   forcerange="-1 1" />
+        
+    </actuator>
+
+</mujoco>
