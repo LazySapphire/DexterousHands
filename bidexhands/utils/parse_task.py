@@ -28,6 +28,7 @@ from bidexhands.tasks.shadow_hand_block_stack import ShadowHandBlockStack
 
 from bidexhands.tasks.myhand_door_open_inward import MyHandDoorOpenInward
 from bidexhands.tasks.myhand_door_close_inward import MyHandDoorCloseInward
+from bidexhands.tasks.myhand_push_block import MyHandPushBlock
 
 # Allegro hand
 from bidexhands.tasks.allegro_hand_over import AllegroHandOver
