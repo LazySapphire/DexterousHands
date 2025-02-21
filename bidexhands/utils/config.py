@@ -82,7 +82,7 @@ def retrieve_cfg(args, use_rlg_config=False):
     elif args.task in ["ShadowHandMetaMT1"]:
         return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/{}.yaml".format(args.task)
     
-    elif args.task in ["MyHandDoorOpenInward"]:
+    elif args.task in ["MyHandDoorOpenInward", "MyHandDoorCloseInward"]:
         return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/{}.yaml".format(args.task)
 
     else:

@@ -1,9 +1,9 @@
 python train.py \
---task=MyHandDoorOpenInward \
+--task=MyHandDoorCloseInward \
 --algo=ppo
 
 # 可选：
-
+# "MyHandDoorCloseInward", 
 # "MyHandDoorOpenInward", 
 
 
@@ -17,7 +17,6 @@ python train.py \
 # "MyHandCatchOver2Underarm", 
 # "MyHandBottleCap", 
 # "MyHandDoorCloseOutward",
-# "MyHandDoorCloseInward", 
 # "MyHandDoorOpenOutward", 
 # "MyHandKettle", 
 # "MyHandPen", 
