@@ -138,7 +138,7 @@ class ShadowHandPushBlock(BaseTask):
         self.num_obs_dict = {
             "point_cloud": 428 + self.num_point_cloud_feature_dim * 3,
             "point_cloud_for_distill": 428 + self.num_point_cloud_feature_dim * 3,
-            "full_state": 428
+            "full_state": 428   # 199*2+30
         }
         self.num_hand_obs = 72 + 95 + 26 + 6
         self.up_axis = 'z'

@@ -2,6 +2,7 @@ import os
 import numpy as np
 from collections import deque
 from copy import deepcopy
+from datetime import datetime
 import itertools
 import time
 import statistics
@@ -102,7 +103,7 @@ class SAC:
         self.warm_up = True
 
         # Log
-        log_dir = log_dir + "_seed{}".format(self.vec_env.task.cfg["seed"])
+        log_dir = log_dir + "_seed{}_{}".format(self.vec_env.task.cfg["seed"], datetime.now().strftime("%m%d%H%M"))
         self.log_dir = log_dir
         self.print_log = print_log
         self.writer = SummaryWriter(log_dir=self.log_dir, flush_secs=10)

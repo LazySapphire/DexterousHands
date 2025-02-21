@@ -3,6 +3,7 @@ from bidexhands.algorithms.rl.sac import SAC
 from bidexhands.algorithms.rl.td3 import TD3
 from bidexhands.algorithms.rl.ddpg import DDPG
 from bidexhands.algorithms.rl.trpo import TRPO
+from datetime import datetime
 
 def process_sarl(args, env, cfg_train, logdir):
     learn_cfg = cfg_train["learn"]
@@ -16,7 +17,7 @@ def process_sarl(args, env, cfg_train, logdir):
     if args.max_iterations != -1:
         cfg_train["learn"]["max_iterations"] = args.max_iterations
 
-    logdir = logdir + "_seed{}".format(env.task.cfg["seed"])
+    logdir = logdir + "_seed{}_{}".format(env.task.cfg["seed"], datetime.now().strftime("%m%d%H%M"))
 
     """Set up the algo system for training or inferencing."""
     model = eval(args.algo.upper())(vec_env=env,
