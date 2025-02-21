@@ -26,6 +26,8 @@ from bidexhands.tasks.shadow_hand_re_orientation import ShadowHandReOrientation
 from bidexhands.tasks.shadow_hand_kettle import ShadowHandKettle
 from bidexhands.tasks.shadow_hand_block_stack import ShadowHandBlockStack
 
+from bidexhands.tasks.myhand_door_open_inward import MyHandDoorOpenInward
+
 # Allegro hand
 from bidexhands.tasks.allegro_hand_over import AllegroHandOver
 from bidexhands.tasks.allegro_hand_catch_underarm import AllegroHandCatchUnderarm

@@ -1,6 +1,6 @@
 # if given, will override the device setting in gym. 
 env: 
-  env_name: "myhand_door_close_inward"
+  env_name: "myhand_door_open_inward"
   numEnvs: 256
   envSpacing: 1.5
   episodeLength: 250
