@@ -20,12 +20,11 @@ from isaacgym import gymtorch
 from isaacgym import gymapi
 
 
-class MyHandDoorOpenInward(BaseTask):
+class ShadowHandDoorCloseInward(BaseTask):
     """
-    This class corresponds to the DoorOpenInward task. This environment also require a opened door 
-    to be closed and the door can only be pushed inward or initially open outward, but because they 
-    can't complete the task by simply pushing, which need to catch the handle by hand and then open 
-    or close it, so it is relatively difficult.
+    This class corresponds to the DoorCloseInward task. This environment require a closed door 
+    to be opened and the door can only be pushed outward or initially open inward. Both these two 
+    environments only need to do the push behavior, so it is relatively simple
 
     Args:
         cfg (dict): The configuration file of the environment, which is the parameter defined in the
@@ -57,6 +56,7 @@ class MyHandDoorOpenInward(BaseTask):
 
         is_multi_agent (bool): Specifies whether it is a multi-agent environment
     """
+
     def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless, agent_index=[[[0, 1, 2, 3, 4, 5]], [[0, 1, 2, 3, 4, 5]]], is_multi_agent=False):
         self.cfg = cfg
         self.sim_params = sim_params
@@ -248,7 +248,7 @@ class MyHandDoorOpenInward(BaseTask):
 
         self.reset_goal_buf = self.reset_buf.clone()
         self.successes = torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
-        self.consecutive_successes = torch.zeros(1, dtype=torch.float, device=self.device)
+        self.consecutive_successes = torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
 
         self.av_factor = to_torch(self.av_factor, dtype=torch.float, device=self.device)
         self.apply_forces = torch.zeros((self.num_envs, self.num_bodies, 3), device=self.device, dtype=torch.float)
@@ -288,6 +288,7 @@ class MyHandDoorOpenInward(BaseTask):
 
             num_per_row (int): Specify how many environments in a row
         """
+
         lower = gymapi.Vec3(-spacing, -spacing, 0.0)
         upper = gymapi.Vec3(spacing, spacing, spacing)
 
@@ -426,11 +427,11 @@ class MyHandDoorOpenInward(BaseTask):
         table_asset = self.gym.create_box(self.sim, table_dims.x, table_dims.y, table_dims.z, asset_options)
 
         shadow_hand_start_pose = gymapi.Transform()
-        shadow_hand_start_pose.p = gymapi.Vec3(0.55, 0.2, 0.6)
+        shadow_hand_start_pose.p = gymapi.Vec3(0.9, 0.5, 0.6)
         shadow_hand_start_pose.r = gymapi.Quat().from_euler_zyx(3.14159, 1.57, 1.57)
 
         shadow_another_hand_start_pose = gymapi.Transform()
-        shadow_another_hand_start_pose.p = gymapi.Vec3(0.55, -0.2, 0.6)
+        shadow_another_hand_start_pose.p = gymapi.Vec3(0.9, -0.5, 0.6)
         shadow_another_hand_start_pose.r = gymapi.Quat().from_euler_zyx(3.14159, -1.57, 1.57)
 
         object_start_pose = gymapi.Transform()
@@ -569,9 +570,7 @@ class MyHandDoorOpenInward(BaseTask):
             self.object_init_state.append([object_start_pose.p.x, object_start_pose.p.y, object_start_pose.p.z,
                                            object_start_pose.r.x, object_start_pose.r.y, object_start_pose.r.z, object_start_pose.r.w,
                                            0, 0, 0, 0, 0, 0])
-            
             self.gym.set_actor_dof_properties(env_ptr, object_handle, object_dof_props)
-
             object_idx = self.gym.get_actor_index(env_ptr, object_handle, gymapi.DOMAIN_SIM)
             self.object_indices.append(object_idx)
             # self.gym.set_actor_scale(env_ptr, object_handle, 0.3)
@@ -706,6 +705,7 @@ class MyHandDoorOpenInward(BaseTask):
             self.gym.render_all_camera_sensors(self.sim)
             self.gym.start_access_image_tensors(self.sim)
 
+
         self.object_pose = self.root_state_tensor[self.object_indices, 0:7]
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3]
         self.object_rot = self.root_state_tensor[self.object_indices, 3:7]
@@ -817,6 +817,7 @@ class MyHandDoorOpenInward(BaseTask):
         422 - 424	door right handle position
         425 - 427	door left handle position
         """
+
         num_ft_states = 13 * int(self.num_fingertips / 2)  # 65
         num_ft_force_torques = 6 * int(self.num_fingertips / 2)  # 30
 
@@ -870,6 +871,7 @@ class MyHandDoorOpenInward(BaseTask):
         # self.obs_buf[:, goal_obs_start:goal_obs_start + 7] = self.goal_pose
         # self.obs_buf[:, goal_obs_start + 7:goal_obs_start + 11] = quat_mul(self.object_rot, quat_conjugate(self.goal_rot))
 
+
     def compute_point_cloud_observation(self, collect_demonstration=False):
         """
         Compute the observations of all environment. The observation is composed of three parts: 
@@ -903,6 +905,7 @@ class MyHandDoorOpenInward(BaseTask):
         422 - 424	door right handle position
         425 - 427	door left handle position
         """
+
         num_ft_states = 13 * int(self.num_fingertips / 2)  # 65
         num_ft_force_torques = 6 * int(self.num_fingertips / 2)  # 30
 
@@ -952,7 +955,9 @@ class MyHandDoorOpenInward(BaseTask):
         self.obs_buf[:, obj_obs_start + 10:obj_obs_start + 13] = self.vel_obs_scale * self.object_angvel
         self.obs_buf[:, obj_obs_start + 13:obj_obs_start + 16] = self.door_left_handle_pos
         self.obs_buf[:, obj_obs_start + 16:obj_obs_start + 19] = self.door_right_handle_pos
-
+        # goal_obs_start = obj_obs_start + 13  # 157 = 144 + 13
+        # self.obs_buf[:, goal_obs_start:goal_obs_start + 7] = self.goal_pose
+        # self.obs_buf[:, goal_obs_start + 7:goal_obs_start + 11] = quat_mul(self.object_rot, quat_conjugate(self.goal_rot))
         point_clouds = torch.zeros((self.num_envs, self.pointCloudDownsampleNum, 3), device=self.device)
         
         if self.camera_debug:
@@ -991,7 +996,6 @@ class MyHandDoorOpenInward(BaseTask):
 
         point_clouds_start = obj_obs_start + 19
         self.obs_buf[:, point_clouds_start:].copy_(point_clouds.view(self.num_envs, self.pointCloudDownsampleNum * 3))
-
 
     def reset_target_pose(self, env_ids, apply_reset=False):
         """
@@ -1076,10 +1080,10 @@ class MyHandDoorOpenInward(BaseTask):
 
         self.shadow_hand_dof_pos[env_ids, :] = pos
         self.shadow_hand_another_dof_pos[env_ids, :] = pos
-        self.object_dof_pos[env_ids, :] = to_torch([0, 0], device=self.device)
-        self.goal_object_dof_pos[env_ids, :] = to_torch([0, 0], device=self.device)
-        self.object_dof_vel[env_ids, :] = to_torch([0, 0], device=self.device)
-        self.goal_object_dof_vel[env_ids, :] = to_torch([0, 0], device=self.device)
+        self.object_dof_pos[env_ids, :] = to_torch([1.57, 1.57], device=self.device)
+        self.goal_object_dof_pos[env_ids, :] = to_torch([1.57, 1.57], device=self.device)
+        self.object_dof_vel[env_ids, :] = to_torch([1.57, 1.57], device=self.device)
+        self.goal_object_dof_vel[env_ids, :] = to_torch([1.57, 1.57], device=self.device)
 
         self.shadow_hand_dof_vel[env_ids, :] = self.shadow_hand_dof_default_vel + \
             self.reset_dof_vel_noise * rand_floats[:, 5+self.num_shadow_hand_dofs:5+self.num_shadow_hand_dofs*2]   
@@ -1093,10 +1097,10 @@ class MyHandDoorOpenInward(BaseTask):
         self.prev_targets[env_ids, self.num_shadow_hand_dofs:self.num_shadow_hand_dofs*2] = pos
         self.cur_targets[env_ids, self.num_shadow_hand_dofs:self.num_shadow_hand_dofs*2] = pos
 
-        self.prev_targets[env_ids, self.num_shadow_hand_dofs*2:self.num_shadow_hand_dofs*2 + 2] = to_torch([0, 0], device=self.device)
-        self.cur_targets[env_ids, self.num_shadow_hand_dofs*2:self.num_shadow_hand_dofs*2 + 2] = to_torch([0, 0], device=self.device)
-        self.prev_targets[env_ids, self.num_shadow_hand_dofs*2 + 2:self.num_shadow_hand_dofs*2 + 2*2] = to_torch([0, 0], device=self.device)
-        self.cur_targets[env_ids, self.num_shadow_hand_dofs*2 + 2:self.num_shadow_hand_dofs*2 + 2*2] = to_torch([0, 0], device=self.device)
+        self.prev_targets[env_ids, self.num_shadow_hand_dofs*2:self.num_shadow_hand_dofs*2 + 2] = to_torch([1.57, 1.57], device=self.device)
+        self.cur_targets[env_ids, self.num_shadow_hand_dofs*2:self.num_shadow_hand_dofs*2 + 2] = to_torch([1.57, 1.57], device=self.device)
+        self.prev_targets[env_ids, self.num_shadow_hand_dofs*2 + 2:self.num_shadow_hand_dofs*2 + 2*2] = to_torch([1.57, 1.57], device=self.device)
+        self.cur_targets[env_ids, self.num_shadow_hand_dofs*2 + 2:self.num_shadow_hand_dofs*2 + 2*2] = to_torch([1.57, 1.57], device=self.device)
 
         hand_indices = self.hand_indices[env_ids].to(torch.int32)
         another_hand_indices = self.another_hand_indices[env_ids].to(torch.int32)
@@ -1414,9 +1418,7 @@ def compute_hand_reward(
     up_rew = torch.zeros_like(right_hand_dist_rew)
     up_rew = torch.where(right_hand_finger_dist < 0.5,
                     torch.where(left_hand_finger_dist < 0.5,
-                                    torch.abs(door_right_handle_pos[:, 1] - door_left_handle_pos[:, 1]) * 2, up_rew), up_rew)
-
-    # up_rew =  torch.where(right_hand_finger_dist <= 0.3, torch.norm(bottle_cap_up - bottle_pos, p=2, dim=-1) * 30, up_rew)
+                                    1 - torch.abs(door_right_handle_pos[:, 1] - door_left_handle_pos[:, 1]) * 2, up_rew), up_rew)
 
     # reward = torch.exp(-0.1*(right_hand_dist_rew * dist_reward_scale)) + torch.exp(-0.1*(left_hand_dist_rew * dist_reward_scale))
     reward = 2 - right_hand_dist_rew - left_hand_dist_rew + up_rew
@@ -1426,8 +1428,8 @@ def compute_hand_reward(
 
     # Find out which envs hit the goal and update successes count
     successes = torch.where(successes == 0, 
-                    torch.where(torch.abs(door_right_handle_pos[:, 1] - door_left_handle_pos[:, 1]) > 0.5, torch.ones_like(successes), successes), successes)
-
+                    torch.where(torch.abs(door_right_handle_pos[:, 1] - door_left_handle_pos[:, 1]) < 0.5, torch.ones_like(successes), successes), successes)
+                    
     resets = torch.where(progress_buf >= max_episode_length, torch.ones_like(resets), resets)
 
     goal_resets = torch.zeros_like(resets)
@@ -1435,7 +1437,7 @@ def compute_hand_reward(
     num_resets = torch.sum(resets)
     finished_cons_successes = torch.sum(successes * resets.float())
 
-    cons_successes = torch.where(resets > 0, successes * resets, consecutive_successes).mean()
+    cons_successes = torch.where(resets > 0, successes * resets, consecutive_successes)
 
     return reward, resets, goal_resets, progress_buf, successes, cons_successes
 
