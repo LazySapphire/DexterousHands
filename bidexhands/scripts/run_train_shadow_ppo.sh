@@ -1,4 +1,4 @@
-python train.py --task=ShadowHandDoorCloseInward --algo=ppo
+python train.py --task=ShadowHandPushBlock --algo=ppo
 # "ShadowHandOver", 
 # "ShadowHandCatchUnderarm", 
 # "ShadowHandTwoCatchUnderarm", 

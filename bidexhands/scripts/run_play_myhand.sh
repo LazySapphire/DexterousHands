@@ -1,16 +1,17 @@
+
 python train.py \
---seed=42 \
 --task=MyHandPushBlock \
---algo=ppo
+--algo=ppo \
+--model_dir=logs/MyHandPushBlock/ppo/ppo_seed42_02220523/model_0.pt \
+--test
 
 # 可选：
+# "MyHandPushBlock", 
+
 # "MyHandDoorCloseInward", 
 # "MyHandDoorOpenInward", 
-# "MyHandPushBlock", 
-# "MyHandDoorCloseInwardSingle"
 
 # 暂未实现:
-
 # "MyHandOver", 
 # "MyHandCatchUnderarm", 
 # "MyHandTwoCatchUnderarm", 
