@@ -68,7 +68,6 @@
 
         <light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false" pos="0 1 4" dir="0 0 -1" name="light0"></light>
         
-        <!-- <body childclass="H0:MPL" name="H0:forearm" pos="0 0 0.2"> -->
         <body childclass="H0:MPL" name="H0:forearm" pos="1 1.25 0.15" euler="1.5708 0 3.14159">
             <inertial mass="0.1" pos="0 0 0" diaginertia="0.001 0.001 0.001" />
 
