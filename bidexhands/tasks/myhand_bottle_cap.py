@@ -492,15 +492,6 @@ class MyHandBottleCap(BaseTask):
 
             self.camera_v2, self.camera_u2 = torch.meshgrid(self.camera_v, self.camera_u, indexing='ij')
 
-            if self.point_cloud_debug:
-                import open3d as o3d
-                from bidexhands.utils.o3dviewer import PointcloudVisualizer
-                self.pointCloudVisualizer = PointcloudVisualizer()
-                self.pointCloudVisualizerInitialized = False
-                self.o3d_pc = o3d.geometry.PointCloud()
-            else :
-                self.pointCloudVisualizer = None
-
         for i in range(self.num_envs):
             # create env instance
             env_ptr = self.gym.create_env(
@@ -969,7 +960,6 @@ class MyHandBottleCap(BaseTask):
         self.reset_buf[env_ids] = 0
         self.successes[env_ids] = 0
 
-
     def pre_physics_step(self, actions):
         """
         The pre-processing of the physics step. Determine whether the reset environment is needed, 
@@ -1053,7 +1043,6 @@ class MyHandBottleCap(BaseTask):
         self.prev_targets[:, self.actuated_dof_indices + self.num_shadow_hand_dofs] = self.cur_targets[:, self.actuated_dof_indices + self.num_shadow_hand_dofs]
         
         self.gym.set_dof_position_target_tensor(self.sim, gymtorch.unwrap_tensor(self.cur_targets))
-
 
     def post_physics_step(self):
         """
@@ -1147,71 +1136,9 @@ class MyHandBottleCap(BaseTask):
         row_total = tensor.shape[0]
         return tensor[torch.randint(low=0, high=row_total, size=(dim_needed,)),:]
 
-    def sample_points(self, points, sample_num=1000, sample_mathed='furthest'):
-        eff_points = points[points[:, 2]>0.04]
-        if eff_points.shape[0] < sample_num :
-            eff_points = points
-        if sample_mathed == 'random':
-            sampled_points = self.rand_row(eff_points, sample_num)
-        elif sample_mathed == 'furthest':
-            sampled_points_id = pointnet2_utils.furthest_point_sample(eff_points.reshape(1, *eff_points.shape), sample_num)
-            sampled_points = eff_points.index_select(0, sampled_points_id[0].long())
-        return sampled_points
-
-    def camera_visulization(self, is_depth_image=False):
-        if is_depth_image:
-            camera_depth_tensor = self.gym.get_camera_image_gpu_tensor(self.sim, self.envs[0], self.cameras[0], gymapi.IMAGE_DEPTH)
-            torch_depth_tensor = gymtorch.wrap_tensor(camera_depth_tensor)
-            torch_depth_tensor = torch.clamp(torch_depth_tensor, -1, 1)
-            torch_depth_tensor = scale(torch_depth_tensor, to_torch([0], dtype=torch.float, device=self.device),
-                                                         to_torch([256], dtype=torch.float, device=self.device))
-            camera_image = torch_depth_tensor.cpu().numpy()
-            camera_image = Im.fromarray(camera_image)
-        
-        else:
-            camera_rgba_tensor = self.gym.get_camera_image_gpu_tensor(self.sim, self.envs[0], self.cameras[0], gymapi.IMAGE_COLOR)
-            torch_rgba_tensor = gymtorch.wrap_tensor(camera_rgba_tensor)
-            camera_image = torch_rgba_tensor.cpu().numpy()
-            camera_image = Im.fromarray(camera_image)
-        
-        return camera_image
 #####################################################################
 ###=========================jit functions=========================###
 #####################################################################
-@torch.jit.script
-def depth_image_to_point_cloud_GPU(camera_tensor, camera_view_matrix_inv, camera_proj_matrix, u, v, width:float, height:float, depth_bar:float, device:torch.device):
-    # time1 = time.time()
-    depth_buffer = camera_tensor.to(device)
-
-    # Get the camera view matrix and invert it to transform points from camera to world space
-    vinv = camera_view_matrix_inv
-
-    # Get the camera projection matrix and get the necessary scaling
-    # coefficients for deprojection
-    
-    proj = camera_proj_matrix
-    fu = 2/proj[0, 0]
-    fv = 2/proj[1, 1]
-
-    centerU = width/2
-    centerV = height/2
-
-    Z = depth_buffer
-    X = -(u-centerU)/width * Z * fu
-    Y = (v-centerV)/height * Z * fv
-
-    Z = Z.view(-1)
-    valid = Z > -depth_bar
-    X = X.view(-1)
-    Y = Y.view(-1)
-
-    position = torch.vstack((X, Y, Z, torch.ones(len(X), device=device)))[:, valid]
-    position = position.permute(1, 0)
-    position = position@vinv
-
-    points = position[:, 0:3]
-
-    return points
 
 @torch.jit.script
 def compute_hand_reward(
