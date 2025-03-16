@@ -1,4 +1,4 @@
-python train.py --task=ShadowHandPushBlock --algo=ppo
+python train.py --task=ShadowHandBottleCap --algo=ppo
 # "ShadowHandOver", 
 # "ShadowHandCatchUnderarm", 
 # "ShadowHandTwoCatchUnderarm", 

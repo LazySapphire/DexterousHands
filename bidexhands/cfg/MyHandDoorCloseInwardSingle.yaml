@@ -1,9 +1,9 @@
 # if given, will override the device setting in gym. 
 env: 
-  env_name: "my_hand_bottle_cap"
-  numEnvs: 256
+  env_name: "my_hand_door_close_inward"
+  numEnvs: 1
   envSpacing: 1.5
-  episodeLength: 125
+  episodeLength: 250
   enableDebugVis: False
   cameraDebug: True
   pointCloudDebug: True
@@ -13,7 +13,7 @@ env:
   forceLimitScale: 1.0
   useRelativeControl: False
   dofSpeedScale: 20.0
-  actionsMovingAverage: 0.6
+  actionsMovingAverage: 1.0
   controlFrequencyInv: 1 # 60 Hz
 
   startPositionNoise: 0.0
@@ -25,9 +25,9 @@ env:
   resetDofVelRandomInterval: 0.0
 
   distRewardScale: 20
-  # *
-  transition_scale: 0.02
-  orientation_scale: 0.02
+  # * 
+  transition_scale: 0.1 # .5
+  orientation_scale: 0.3 # .5
   rotRewardScale: 1.0
   rotEps: 0.1
   actionPenaltyScale: -0.0002
@@ -159,7 +159,7 @@ sim:
   physx:
     num_threads: 4
     solver_type: 1  # 0: pgs, 1: tgs
-    num_position_iterations: 4
+    num_position_iterations: 8
     num_velocity_iterations: 0
     contact_offset: 0.002
     rest_offset: 0.0

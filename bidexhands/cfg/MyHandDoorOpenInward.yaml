@@ -25,8 +25,10 @@ env:
   resetDofVelRandomInterval: 0.0
 
   distRewardScale: 20
-  transition_scale: 0.5
-  orientation_scale: 0.5
+  # 控制base平移力度
+  # 控制base旋转力度
+  transition_scale: 0.02
+  orientation_scale: 0.02
   rotRewardScale: 1.0
   rotEps: 0.1
   actionPenaltyScale: -0.0002

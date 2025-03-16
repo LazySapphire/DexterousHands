@@ -1,6 +1,6 @@
 python train.py \
---seed=42 \
---task=MyHandPushBlock \
+--seed=0 \
+--task=MyHandDoorOpenInward \
 --algo=ppo
 
 # 可选：
@@ -8,16 +8,15 @@ python train.py \
 # "MyHandDoorOpenInward", 
 # "MyHandPushBlock", 
 # "MyHandDoorCloseInwardSingle"
+# "MyHandBottleCap", 
 
 # 暂未实现:
-
 # "MyHandOver", 
 # "MyHandCatchUnderarm", 
 # "MyHandTwoCatchUnderarm", 
 # "MyHandCatchAbreast", 
 # "MyHandReOrientation",
 # "MyHandCatchOver2Underarm", 
-# "MyHandBottleCap", 
 # "MyHandDoorCloseOutward",
 # "MyHandDoorOpenOutward", 
 # "MyHandKettle", 

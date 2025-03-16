@@ -1,8 +1,8 @@
 
 python train.py \
---task=MyHandPushBlock \
+--task=MyHandDoorOpenInward \
 --algo=ppo \
---model_dir=logs/MyHandPushBlock/ppo/ppo_seed42_02220523/model_0.pt \
+--model_dir=logs/MyHandDoorOpenInward/ppo/ppo_seed0_02280343/model_2000.pt \
 --test
 
 # 可选：

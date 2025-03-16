@@ -1,7 +1,7 @@
 # if given, will override the device setting in gym. 
 env: 
   env_name: "my_hand_push_block"
-  numEnvs: 128
+  numEnvs: 2048
   envSpacing: 1.5
   episodeLength: 125
   enableDebugVis: False
@@ -25,8 +25,8 @@ env:
   resetDofVelRandomInterval: 0.0
 
   distRewardScale: 20
-  transition_scale: 0.5
-  orientation_scale: 0.1
+  transition_scale: 0.05   # 0.5
+  orientation_scale: 0.05
   rotRewardScale: 1.0
   rotEps: 0.1
   actionPenaltyScale: -0.0002
@@ -44,7 +44,7 @@ env:
 
   asset:
     assetRoot: "../assets"
-    assetFileName: "mjcf/myhand/hand/hypnos_hand.xml"
+    assetFileName: "mjcf/myhand/hand/hypnos_hand_fix.xml"
     assetFileNameBlock: "urdf/objects/cube_multicolor.urdf"
     assetFileNameEgg: "mjcf/open_ai_assets/hand/egg.xml"
     assetFileNamePen: "mjcf/open_ai_assets/hand/pen.xml"
