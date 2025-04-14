@@ -106,6 +106,21 @@ class ActorCritic(nn.Module):
 
         return actions_log_prob, entropy, value, actions_mean, self.log_std.repeat(actions_mean.shape[0], 1)
 
+    def fix_nan_and_inf_params(self, min_val=-1, max_val=1):
+        """
+        修复模型参数中的nan和inf值
+        
+        Args:
+            min_val: 随机值的最小值
+            max_val: 随机值的最大值
+        """
+        with torch.no_grad():
+            for param in self.parameters():
+                invalid_mask = torch.isnan(param) | torch.isinf(param)
+                if invalid_mask.any():
+                    random_values = torch.rand_like(param) * (max_val - min_val) + min_val
+                    param.data[invalid_mask] = random_values[invalid_mask]
+        return self
 
 def get_activation(act_name):
     if act_name == "elu":

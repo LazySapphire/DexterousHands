@@ -27,6 +27,7 @@ from bidexhands.tasks.shadow_hand_kettle import ShadowHandKettle
 from bidexhands.tasks.shadow_hand_block_stack import ShadowHandBlockStack
 
 from bidexhands.tasks.myhand_door_open_inward import MyHandDoorOpenInward
+from bidexhands.tasks.myhand_door_open_inward_curr import MyHandDoorOpenInwardCurr
 from bidexhands.tasks.myhand_door_close_inward import MyHandDoorCloseInward
 from bidexhands.tasks.myhand_door_close_inward_single import MyHandDoorCloseInwardSingle
 from bidexhands.tasks.myhand_push_block import MyHandPushBlock

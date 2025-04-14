@@ -129,7 +129,14 @@ class PPO:
                         current_obs = self.vec_env.reset()
                         current_states = self.vec_env.get_state()
                     # Compute the action
-                    actions, actions_log_prob, values, mu, sigma = self.actor_critic.act(current_obs, current_states)
+                    while True:
+                        try:
+                            actions, actions_log_prob, values, mu, sigma = self.actor_critic.act(current_obs, current_states)
+                            break
+                        except ValueError as e:
+                            print("进行一次参数修复")
+                            # 只在出现问题时修复参数
+                            self.fix_nan_and_inf_params()
                     # Step the vec_environment
                     next_obs, rews, dones, infos = self.vec_env.step(actions)
                     next_states = self.vec_env.get_state()

@@ -500,6 +500,33 @@ class MyHandDoorOpenInward(BaseTask):
         for ft_a_handle in self.fingertip_another_handles:
             self.gym.create_asset_force_sensor(shadow_hand_another_asset, ft_a_handle, sensor_pose)
 
+        if self.obs_type in ["point_cloud"]:
+            self.cameras = []
+            self.camera_tensors = []
+            self.camera_view_matrixs = []
+            self.camera_proj_matrixs = []
+
+            self.camera_props = gymapi.CameraProperties()
+            self.camera_props.width = 256
+            self.camera_props.height = 256
+            self.camera_props.enable_tensors = True
+
+            self.env_origin = torch.zeros((self.num_envs, 3), device=self.device, dtype=torch.float)
+            self.pointCloudDownsampleNum = 768
+            self.camera_u = torch.arange(0, self.camera_props.width, device=self.device)
+            self.camera_v = torch.arange(0, self.camera_props.height, device=self.device)
+
+            self.camera_v2, self.camera_u2 = torch.meshgrid(self.camera_v, self.camera_u, indexing='ij')
+
+            if self.point_cloud_debug:
+                import open3d as o3d
+                from bidexhands.utils.o3dviewer import PointcloudVisualizer
+                self.pointCloudVisualizer = PointcloudVisualizer()
+                self.pointCloudVisualizerInitialized = False
+                self.o3d_pc = o3d.geometry.PointCloud()
+            else :
+                self.pointCloudVisualizer = None
+
         for i in range(self.num_envs):
             # create env instance
             env_ptr = self.gym.create_env(

@@ -1,7 +1,9 @@
 python train.py \
+--num_envs=4096 \
 --seed=0 \
 --task=MyHandDoorOpenInward \
---algo=ppo
+--algo=ppo \
+# --headless
 
 # 可选：
 # "MyHandDoorCloseInward", 

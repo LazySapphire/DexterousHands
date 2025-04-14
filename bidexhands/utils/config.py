@@ -88,6 +88,9 @@ def retrieve_cfg(args, use_rlg_config=False):
                        "MyHandBottleCap"]:
         return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/{}.yaml".format(args.task)
 
+    elif args.task in ["MyHandDoorOpenInwardCurr"]:
+        return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/MyHandDoorOpenInward.yaml"
+
     else:
         warn_task_name()
 
