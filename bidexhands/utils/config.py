@@ -88,9 +88,12 @@ def retrieve_cfg(args, use_rlg_config=False):
                        "MyHandBottleCap"]:
         return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/{}.yaml".format(args.task)
 
-    elif args.task in ["MyHandDoorOpenInwardCurr"]:
+    elif args.task in ["MyHandDoorOpenInwardCurr", "MyHandDoorOpenInwardKey"]:
         return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/MyHandDoorOpenInward.yaml"
 
+    elif args.task in ["TestEnv"]:
+        return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/{}.yaml".format(args.task)
+    
     else:
         warn_task_name()
 
