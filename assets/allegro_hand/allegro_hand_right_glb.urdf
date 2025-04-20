@@ -2,9 +2,10 @@
 <robot name="allegro_right">
   <link name="base_link">
     <inertial>
-      <mass value="0.4154"/>
+    <!-- the mass are scaled by 50 and inertia scaled by 500 to prevent 6d pose from moving too fast due to finger movement -->
+      <mass value="20"/>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
+      <inertia ixx="5e-2" ixy="0" ixz="0" iyy="5e-2" iyz="0" izz="5e-2"/>
     </inertial>
     <visual>
       <geometry>

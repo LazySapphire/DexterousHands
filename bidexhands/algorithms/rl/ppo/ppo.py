@@ -129,14 +129,7 @@ class PPO:
                         current_obs = self.vec_env.reset()
                         current_states = self.vec_env.get_state()
                     # Compute the action
-                    while True:
-                        try:
-                            actions, actions_log_prob, values, mu, sigma = self.actor_critic.act(current_obs, current_states)
-                            break
-                        except ValueError as e:
-                            print("进行一次参数修复")
-                            # 只在出现问题时修复参数
-                            self.fix_nan_and_inf_params()
+                    actions, actions_log_prob, values, mu, sigma = self.actor_critic.act(current_obs, current_states)
                     # Step the vec_environment
                     next_obs, rews, dones, infos = self.vec_env.step(actions)
                     next_states = self.vec_env.get_state()
@@ -172,7 +165,7 @@ class PPO:
                 # Learning step
                 start = stop
                 self.storage.compute_returns(last_values, self.gamma, self.lam)
-                mean_value_loss, mean_surrogate_loss = self.update()
+                # mean_value_loss, mean_surrogate_loss = self.update()
                 self.storage.clear()
                 stop = time.time()
                 learn_time = stop - start
@@ -245,7 +238,7 @@ class PPO:
                        f"""{'Total time:':>{pad}} {self.tot_time:.2f}s\n"""
                        f"""{'ETA:':>{pad}} {self.tot_time / (locs['it'] + 1) * (
                                locs['num_learning_iterations'] - locs['it']):.1f}s\n""")
-        print(log_string)
+        # print(log_string)
 
     def update(self):
         mean_value_loss = 0
@@ -322,3 +315,95 @@ class PPO:
         mean_surrogate_loss /= num_updates
 
         return mean_value_loss, mean_surrogate_loss
+
+    # def update(self):
+    #     mean_value_loss = 0
+    #     mean_surrogate_loss = 0
+
+    #     batch = self.storage.mini_batch_generator(self.num_mini_batches)
+    #     for epoch in range(self.num_learning_epochs):
+    #         for indices in batch:
+    #             # 提取小批量数据
+    #             obs_batch = self.storage.observations.view(-1, *self.storage.observations.size()[2:])[indices]
+    #             if self.asymmetric:
+    #                 states_batch = self.storage.states.view(-1, *self.storage.states.size()[2:])[indices]
+    #             else:
+    #                 states_batch = None
+    #             actions_batch = self.storage.actions.view(-1, self.storage.actions.size(-1))[indices]
+                
+    #             # 检查并处理可能的NaN值
+    #             obs_batch = torch.nan_to_num(obs_batch, nan=0.0)
+    #             actions_batch = torch.nan_to_num(actions_batch, nan=0.0)
+                
+    #             # 获取其他批次数据
+    #             target_values_batch = self.storage.values.view(-1, 1)[indices]
+    #             returns_batch = self.storage.returns.view(-1, 1)[indices]
+    #             old_actions_log_prob_batch = self.storage.actions_log_prob.view(-1, 1)[indices]
+    #             advantages_batch = self.storage.advantages.view(-1, 1)[indices]
+                
+    #             # 标准化优势
+    #             advantages_batch = (advantages_batch - advantages_batch.mean()) / (advantages_batch.std() + 1e-8)
+
+    #             try:
+    #                 # 评估当前策略
+    #                 actions_log_prob_batch, entropy_batch, value_batch, mu_batch, sigma_batch = (
+    #                     self.actor_critic.evaluate(obs_batch, states_batch, actions_batch)
+    #                 )
+
+    #                 # 计算比率时增加数值稳定性
+    #                 ratio = torch.exp(torch.clamp(
+    #                     actions_log_prob_batch - torch.squeeze(old_actions_log_prob_batch),
+    #                     -20, 20
+    #                 ))
+
+    #                 # 计算损失
+    #                 surrogate = -torch.squeeze(advantages_batch) * ratio
+    #                 surrogate_clipped = -torch.squeeze(advantages_batch) * torch.clamp(
+    #                     ratio, 1.0 - self.clip_param, 1.0 + self.clip_param
+    #                 )
+    #                 surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()
+
+    #                 # 价值函数损失
+    #                 if self.use_clipped_value_loss:
+    #                     value_clipped = target_values_batch + (value_batch - target_values_batch).clamp(
+    #                         -self.clip_param, self.clip_param
+    #                     )
+    #                     value_losses = (value_batch - returns_batch).pow(2)
+    #                     value_losses_clipped = (value_clipped - returns_batch).pow(2)
+    #                     value_loss = torch.max(value_losses, value_losses_clipped).mean()
+    #                 else:
+    #                     value_loss = (returns_batch - value_batch).pow(2).mean()
+
+    #                 # 总损失
+    #                 loss = (surrogate_loss + 
+    #                     self.value_loss_coef * value_loss - 
+    #                     self.entropy_coef * entropy_batch.mean())
+
+    #                 # 梯度步骤
+    #                 self.optimizer.zero_grad()
+    #                 loss.backward()
+                    
+    #                 # 梯度裁剪
+    #                 torch.nn.utils.clip_grad_norm_(self.actor_critic.parameters(), self.max_grad_norm)
+                    
+    #                 # 检查梯度是否存在NaN
+    #                 for param in self.actor_critic.parameters():
+    #                     if param.grad is not None:
+    #                         param.grad.data = torch.nan_to_num(param.grad.data, nan=0.0)
+                    
+    #                 self.optimizer.step()
+
+    #                 mean_value_loss += value_loss.item()
+    #                 mean_surrogate_loss += surrogate_loss.item()
+
+    #             except Exception as e:
+    #                 print(f"Error in update step: {e}")
+    #                 continue
+
+    #     num_updates = self.num_learning_epochs * self.num_mini_batches
+    #     mean_value_loss /= num_updates
+    #     mean_surrogate_loss /= num_updates
+
+    #     return mean_value_loss, mean_surrogate_loss
+
+

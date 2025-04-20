@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="hypnos_hand">
+  <!-- Base link - palm -->
+  <link name="base_link">
+    <inertial>
+      <mass value="0.1"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/palm.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="palm_material">
+        <color rgba="0.93 0.93 0.93 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/palm.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <!-- Palm fix - fixed part of the palm -->
+  <link name="palm_fix">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/palm_fix.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="palm_fix_material">
+        <color rgba="0.93 0.93 0.93 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/palm_fix.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="palm_fix_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="palm_fix"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+
+  <!-- THUMB FINGER -->
+  <!-- Thumb ROOT -->
+  <link name="tmb_ROOT">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/tmb_ROOT.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="thumb_material">
+        <color rgba="0.93 0.93 0.93 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/tmb_ROOT.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_tmb_ROOT" type="revolute">
+    <parent link="base_link"/>
+    <child link="tmb_ROOT"/>
+    <origin rpy="0 0 0" xyz="0.033278 0.011 0.009418"/>
+    <axis xyz="-0.0875 0 1"/>
+    <limit effort="10" lower="-2.02" upper="0.202" velocity="3.14"/>
+  </joint>
+
+  <!-- Thumb AXIS -->
+  <link name="tmb_AXIS">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/tmb_AXIS.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="thumb_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/tmb_AXIS.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_tmb_AXIS" type="revolute">
+    <parent link="tmb_ROOT"/>
+    <child link="tmb_AXIS"/>
+    <origin rpy="0 0 0" xyz="0.011495 0 -0.010416"/>
+    <axis xyz="-1 0 -0.0875"/>
+    <limit effort="10" lower="-0.202" upper="1.02" velocity="3.14"/>
+  </joint>
+
+  <!-- Thumb MF (Middle Finger) -->
+  <link name="tmb_MF">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/tmb_MF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="thumb_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/tmb_MF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_tmb_MF" type="revolute">
+    <parent link="tmb_AXIS"/>
+    <child link="tmb_MF"/>
+    <origin rpy="0 0 0" xyz="0.031554 -0.012560 0.006266"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="10" lower="-1.57" upper="0.42" velocity="3.14"/>
+  </joint>
+
+  <!-- Thumb DF (Distal Finger) -->
+  <link name="tmb_DF">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/tmb_DF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="thumb_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/tmb_DF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_tmb_DF" type="revolute">
+    <parent link="tmb_MF"/>
+    <child link="tmb_DF"/>
+    <origin rpy="0 0 0" xyz="0.051366 0.004099 0.006644"/>
+    <axis xyz="0 1 1"/>
+    <limit effort="10" lower="-1.33" upper="0.152" velocity="3.14"/>
+  </joint>
+
+  <!-- Thumb tip -->
+  <link name="tmb_tip">
+    <inertial>
+      <mass value="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <joint name="tmb_tip_joint" type="fixed">
+    <parent link="tmb_DF"/>
+    <child link="tmb_tip"/>
+    <origin rpy="0 0 0" xyz="0 0 0.026"/>
+  </joint>
+
+  <!-- MIDDLE FINGER -->
+  <!-- Middle ABD (Abduction) -->
+  <link name="mid_ABD">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/mid_ABD.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="middle_material">
+        <color rgba="0.93 0.93 0.93 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/mid_ABD.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_mid_ABD" type="revolute">
+    <parent link="base_link"/>
+    <child link="mid_ABD"/>
+    <origin rpy="0 0 0" xyz="0 0.0105 0.0866"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="10" lower="-0.26" upper="0.26" velocity="3.14"/>
+  </joint>
+
+  <!-- Middle MF (Middle Finger) -->
+  <link name="mid_MF">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/mid_MF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="middle_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/mid_MF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_mid_MF" type="revolute">
+    <parent link="mid_ABD"/>
+    <child link="mid_MF"/>
+    <origin rpy="0 0 0" xyz="0 -0.0105 0.02314"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="10" lower="0" upper="1.57" velocity="3.14"/>
+  </joint>
+
+  <!-- Middle DF (Distal Finger) -->
+  <link name="mid_DF">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/mid_DF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="middle_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/mid_DF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_mid_DF" type="revolute">
+    <parent link="mid_MF"/>
+    <child link="mid_DF"/>
+    <origin rpy="0 0 0" xyz="0 0 0.052206"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="10" lower="-0.15" upper="1.52" velocity="3.14"/>
+  </joint>
+
+  <!-- Middle tip -->
+  <link name="mid_tip">
+    <inertial>
+      <mass value="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <joint name="mid_tip_joint" type="fixed">
+    <parent link="mid_DF"/>
+    <child link="mid_tip"/>
+    <origin rpy="0 0 0" xyz="0 0 0.026"/>
+  </joint>
+
+  <!-- INDEX FINGER -->
+  <!-- Index ABD (Abduction) -->
+  <link name="idx_ABD">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/idx_ABD.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="index_material">
+        <color rgba="0.93 0.93 0.93 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/idx_ABD.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_idx_ABD" type="revolute">
+    <parent link="base_link"/>
+    <child link="idx_ABD"/>
+    <origin rpy="0 0 0" xyz="0.031527 0.0105 0.08389"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="10" lower="-0.26" upper="0.26" velocity="3.14"/>
+  </joint>
+
+  <!-- Index MF (Middle Finger) -->
+  <link name="idx_MF">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/idx_MF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="index_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/idx_MF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_idx_MF" type="revolute">
+    <parent link="idx_ABD"/>
+    <child link="idx_MF"/>
+    <origin rpy="0 0 0" xyz="0 -0.0105 0.02314"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="10" lower="0" upper="1.57" velocity="3.14"/>
+  </joint>
+
+  <!-- Index DF (Distal Finger) -->
+  <link name="idx_DF">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/idx_DF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="index_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/idx_DF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_idx_DF" type="revolute">
+    <parent link="idx_MF"/>
+    <child link="idx_DF"/>
+    <origin rpy="0 0 0" xyz="0 0 0.052206"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="10" lower="-0.15" upper="1.52" velocity="3.14"/>
+  </joint>
+
+  <!-- Index tip -->
+  <link name="idx_tip">
+    <inertial>
+      <mass value="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <joint name="idx_tip_joint" type="fixed">
+    <parent link="idx_DF"/>
+    <child link="idx_tip"/>
+    <origin rpy="0 0 0" xyz="0 0 0.026"/>
+  </joint>
+
+  <!-- RING FINGER -->
+  <!-- Ring ABD (Abduction) -->
+  <link name="rng_ABD">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/rng_ABD.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="ring_material">
+        <color rgba="0.93 0.93 0.93 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/rng_ABD.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_rng_ABD" type="revolute">
+    <parent link="base_link"/>
+    <child link="rng_ABD"/>
+    <origin rpy="0 0 0" xyz="-0.031527 0.0105 0.08389"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="10" lower="-0.26" upper="0.26" velocity="3.14"/>
+  </joint>
+
+  <!-- Ring MF (Middle Finger) -->
+  <link name="rng_MF">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/rng_MF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="ring_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/rng_MF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_rng_MF" type="revolute">
+    <parent link="rng_ABD"/>
+    <child link="rng_MF"/>
+    <origin rpy="0 0 0" xyz="0 -0.0105 0.02314"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="10" lower="0" upper="1.57" velocity="3.14"/>
+  </joint>
+
+  <!-- Ring DF (Distal Finger) -->
+  <link name="rng_DF">
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../stls/rng_DF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="ring_material"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="../stls/rng_DF.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="jot_rng_DF" type="revolute">
+    <parent link="rng_MF"/>
+    <child link="rng_DF"/>
+    <origin rpy="0 0 0" xyz="0 0 0.052206"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="10" lower="-0.15" upper="1.52" velocity="3.14"/>
+  </joint>
+
+  <!-- Ring tip -->
+  <link name="rng_tip">
+    <inertial>
+      <mass value="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <joint name="rng_tip_joint" type="fixed">
+    <parent link="rng_DF"/>
+    <child link="rng_tip"/>
+    <origin rpy="0 0 0" xyz="0 0 0.026"/>
+  </joint>
+</robot> 

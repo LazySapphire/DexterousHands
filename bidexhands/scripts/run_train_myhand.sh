@@ -1,13 +1,14 @@
 python train.py \
---num_envs=4096 \
+--num_envs=16 \
 --seed=0 \
---task=MyHandDoorOpenInward \
+--task=MyHandDoorOpenInwardKey \
 --algo=ppo \
 # --headless
 
 # 可选：
 # "MyHandDoorCloseInward", 
 # "MyHandDoorOpenInward", 
+# "MyHandDoorOpenInwardCurr".
 # "MyHandPushBlock", 
 # "MyHandDoorCloseInwardSingle"
 # "MyHandBottleCap", 

@@ -1,8 +1,8 @@
 
 python train.py \
---task=MyHandDoorOpenInward \
+--task=MyHandDoorOpenInwardCurr \
 --algo=ppo \
---model_dir=logs/MyHandDoorOpenInward/ppo/ppo_seed0_03171633/model_2000.pt \
+--model_dir=logs/MyHandDoorOpenInwardCurr/ppo/ppo_seed42_03182042/model_500.pt \
 --num_envs=48 \
 --test
 
@@ -11,6 +11,7 @@ python train.py \
 
 # "MyHandDoorCloseInward", 
 # "MyHandDoorOpenInward", 
+# "MyHandDoorOpenInwardCurr", 
 
 # 暂未实现:
 # "MyHandOver", 
