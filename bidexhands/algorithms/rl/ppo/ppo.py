@@ -165,7 +165,7 @@ class PPO:
                 # Learning step
                 start = stop
                 self.storage.compute_returns(last_values, self.gamma, self.lam)
-                # mean_value_loss, mean_surrogate_loss = self.update()
+                mean_value_loss, mean_surrogate_loss = self.update()
                 self.storage.clear()
                 stop = time.time()
                 learn_time = stop - start

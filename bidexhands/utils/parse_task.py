@@ -39,6 +39,7 @@ from bidexhands.tasks.allegro_hand_over import AllegroHandOver
 from bidexhands.tasks.allegro_hand_catch_underarm import AllegroHandCatchUnderarm
 
 from bidexhands.tasks.test_env import TestEnv
+from bidexhands.tasks.avp_allegro_door_open_inward import AvpAllegroDoorCloseInward
 
 # Meta
 from bidexhands.tasks.shadow_hand_meta.shadow_hand_meta_mt1 import ShadowHandMetaMT1
